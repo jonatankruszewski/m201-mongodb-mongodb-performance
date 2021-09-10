@@ -794,3 +794,129 @@ Answer: ```{city: 1, lastName: 1, firstName: 1, accountBalance: 1}```
 ### LAB 4.2
 
 Answer: ```{cuisine: 1}```
+
+## CHAPTER 5
+
+### WORKING WITH DISTRIBUTED SYSTEMS
+
+- Distributed systems: shards, cluster
+- Consider latency
+- Data is spread across diferent nods
+- Read implications
+- Write implications
+- Replica set: High avaliability. Avoids downtimes in system failures
+- Sharded cluster: for horizontal scalability. Contain config servers.
+- Sharded cluster: will have mongos daemons responsible for routing the client requests to the designated nodes.
+- Config server: mapping, general configurations.
+- Shard nodes: replica set.
+- Sharding: when you reached your limit for vertical scaling.
+
+Client => Mongos (several)  -> config servers
+                            -> sharded nodes
+
+- Collocating the mongos in the same server as the application will reduce the latency.
+- Two types of reads in sharded clusters:
+  - Scattered gathered, where we ping all nodes of our shard cluster for the information
+  - Routed queries: To a specific shard. Obviously performs better. Uses the sharded key. Mongos can pinpoint the cluster
+  - Sort happens in the primary shard
+  - Once the sort merge is performed in the main shard, it comes back to the mongos and then to the client.
+
+### QUIZ Performance Considerations in Distributed Systems Part 2
+
+Problem:
+
+From a performance standpoint, when working with a distributed database it's important to consider...
+
+Check all answers that apply:
+
+- [X] Routed Queries
+- [X] Latency
+- [ ] Reading from secondaries only
+
+### INCREASING WRITE PERFORMANCE WITH SHARDING
+
+- Chunk limit: 64 mb
+- Inclusive lower band, exlucsive upper band
+- Cardinality: Number of distinct values. Determinates the max number of chunks.
+- Compound shard keys increase cardinality.
+- Jumbo chunks: upper and lower bands are the same (due to low cardinality)
+- Rate of change: avoid monotonically increasing / decreasing values. Solution: hashing the key. _id will fall in this category.
+- Bulk write: ordered-> Slower (more latency)
+- Bulk write: unordered-> Faster (writing in parallel)
+
+### QUIZ Increasing Write Performance with Sharding Part 2
+
+Problem:
+
+Which of the following is/are true?
+
+Check all answers that apply:
+
+- [ ] Vertical scaling is generally cheaper than horizontal scaling.
+- [X] Picking a good shard key is one of the most important parts of sharding.
+- [ ] Ordered bulk operations are faster than unordered.
+
+### READING FROM SECONDARIES
+
+- Read preference default in repllica set: primary node
+- Primary, primaryPreferred, secondary, secondaryPreferred, nearest
+- Writes can only be routed to the primary.
+- Reading from the secondary has a higher risk of stale data.
+- Reading to secondaries: good for analytics queries, local reads.
+- Reading from secondaries doesn't provide extra throughput on the primary, since at some point the data is going to be replicated to the secondary.
+
+### QUIZ Reading from Secondaries
+
+Problem:
+
+When should you ever read from secondaries?
+
+Check all answers that apply:
+
+- [X] To provide reads with lower latency.
+- [ ] To increase performance in a write-heavy system.
+- [X] When doing ad-hoc queries and analytic jobs.
+
+### Replica sets with different idexes
+
+- Not very common
+- Only usefull for some cases: some analytics, text search, reporting on delayed consistency data.
+- Specific indexes for secondary nodes.
+- These nodes should never become primary!! (hide them, or give them a lower priority)
+
+- When creating an index in the primary node, also is created in the secondaries.
+- To enable reads from secondaries: db.setSlaveOk() when connected to the secondary.
+- Once you create something on the primary, it will be reflected in the secondary nodes
+- When connected to the secondary, We can create more indexes.
+- rs.status()
+- The index will only be utilized if it is running on the designated secondary node.
+- To create this index, we need to shutdown the secondary, restart it on standalone and then create it. Then put it down, and restart it in replica set.
+
+### QUIZ Replica Sets with Differing Indexes Part 3
+
+Problem:
+
+Which of the following conditions apply when creating indexes on secondaries?
+
+Check all answers that apply:
+
+- [X] A secondary should never be allowed to become primary
+- [ ] These indexes can only be set on secondary nodes
+- [ ] We can create specific indexes on secondaries, even if they are not running in standalone mode
+
+### AGGREGATION PIPELINES ON SHARDED CLUSTERS
+
+- $out, $facet, $lookup, $graphlookup => the primary will merge
+- When performing a query, which will ping several shards, each shard will calculate it internal 'part' of the response, and then the merge will happen in a random shard.
+
+### QUIZ Aggregation Pipeline on a Sharded Cluster
+
+Problem:
+
+What operators will cause a merge stage on the primary shard for a database?
+
+Check all answers that apply:
+
+- [x] $out
+- [ ] $group
+- [X] $lookup
