@@ -391,7 +391,6 @@ db.restaurants.createIndex(
 Problem:
 
 Which of the following is true regarding partial indexes?
-Attempts Remaining:∞Unlimited Attempts
 
 Check all answers that apply:
 
@@ -475,12 +474,11 @@ Check all answers that apply:
 - Indexes need to be mantained.
 - Indexes all fields!
 - db.coll.createindex({"$**": 1})
-- Useful for unpredictable worloads
+- Useful for unpredictable workloads
 
 ### QUIZ WILDCARD INDEXES
 
 Using the wildcardProjection flag with Wildcard Indexes, we can:
-Attempts Remaining:∞Unlimited Attempts
 
 Check all answers that apply:
 
@@ -542,8 +540,6 @@ In this lab you're going to examine several example queries and determine which 
 
 If you had to build one index on the people collection, which of the following indexes would best service all 3 queries?
 
-Attempts Remaining:Incorrect Answer
-
 Choose the best answer:
 
 - [ ] { "job": 1, "address.state": 1, "first_name": 1 }
@@ -572,7 +568,7 @@ Choose the best answer:
 - [ ] Hybrid index builds block all reads and writes to the collection being indexed.
 - [ ] Hybrid index builds block all reads and writes to the database that holds the collection being indexed.
 - [ ] Background index builds are now faster.
-- [X] MongoDB now only has one index buid type available
+- [X] MongoDB now only has one index build type available
 - [ ] Foreground index builds are now non-blocking.
 
 ### QUERY PLANS
@@ -589,7 +585,6 @@ Choose the best answer:
 Problem:
 
 Which of the following is/are true concerning query plans?
-Attempts Remaining:∞Unlimited Attempts
 
 Check all answers that apply:
 
@@ -598,22 +593,21 @@ Check all answers that apply:
 - [ ] When query plans are generated, for a given query, every index generates at least one query plan.
 - [ ] If an index can't be used, then there is no query plan for that query.
 
-### Force indexes with hing
+### Force indexes with hint
 
 - When having several indexes, to be explicit.
 - attach .hint (it is a cursor method)
 - db.col.find({}).hint({name:1, }) // pass the shape or the string of the name of the index.
 - Use with caution. MongoDB usually does a good job
 - When there are a LOT of index.
-- Better to remove unused index.
+- Better to remove unused indexes.
 - Overrides mongodb default selection.
-  
+
 ### Forcing Indexes with Hint
 
 Problem:
 
 What is the method that forces MongoDB to use a particular index?
-Attempts Remaining:∞Unlimited Attempts
 
 Check all answers that apply:
 
@@ -713,7 +707,7 @@ Check all answers that apply:
 
 - Any of the indexed fields are arrays
 - Any of the indexed fields are embedded documents
-- When run agianst a mongos if the index does not contain the shard key
+- When run against a mongos if the index does not contain the shard key
 
 ### QUIZ Covered Queries
 
@@ -816,7 +810,7 @@ Client => Mongos (several)  -> config servers
 
 - Collocating the mongos in the same server as the application will reduce the latency.
 - Two types of reads in sharded clusters:
-  - Scattered gathered, where we ping all nodes of our shard cluster for the information
+  - Scatter gather, where we ping all nodes of our shard cluster for the information
   - Routed queries: To a specific shard. Obviously performs better. Uses the sharded key. Mongos can pinpoint the cluster
   - Sort happens in the primary shard
   - Once the sort merge is performed in the main shard, it comes back to the mongos and then to the client.
@@ -883,7 +877,6 @@ Check all answers that apply:
 - Only usefull for some cases: some analytics, text search, reporting on delayed consistency data.
 - Specific indexes for secondary nodes.
 - These nodes should never become primary!! (hide them, or give them a lower priority)
-
 - When creating an index in the primary node, also is created in the secondaries.
 - To enable reads from secondaries: db.setSlaveOk() when connected to the secondary.
 - Once you create something on the primary, it will be reflected in the secondary nodes
